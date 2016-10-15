@@ -14,7 +14,8 @@ class Controller {
         
         $this->allowed_actions = array(
         
-            "go_to" => "go_to"
+            "go_to" => "go_to" ,
+            "shortenUrl" => "shortenUrl"
         
         );
         
@@ -26,8 +27,10 @@ class Controller {
        } else {
            
            if(method_exists( "Controller" , $this->getUriSegment()) && array_key_exists($this->getUriSegment() , $this->allowed_actions)) {
+              // $params = array($this->getUriSegment(1));
+              // $this->run( $this->getUriSegment() , $params );
                
-               $this->run($this->getUriSegment());
+               $this->run( $this->getUriSegment() );
                
            }
            
@@ -48,8 +51,8 @@ class Controller {
     
     }
     
-    public function go_to() {
-        echo "go_to";
+    public function go_to( $param1 = "" ) {
+        echo "go_to: this is param1: $param1";
         
     }
     
@@ -71,6 +74,39 @@ class Controller {
             
         } else {
             header("Location: /");
+        }
+        
+    }
+    
+    public function shortenUrl() {
+        
+        $url = (isset($_POST['url'])) ? $_POST['url'] : null;
+        $insert = array();
+        if($url!=null) {
+            $insert['url'] = $url;
+            
+            
+            
+            
+            if($this->db->pdo_insert( 'url' , $insert )) {
+                
+                $your_link = $this->db->pdo_read_last('url','id');
+                
+                $this->view("head");
+                
+                echo '<div class="w3-card w3-khaki w3-panel">Copy Url:<textarea class="w3-input">http://localhost/'.$your_link['id'].'</textarea><a href="http://localhost/'.$your_link['id'].'">http://localhost/'.$your_link['id'].'</a></div>';
+                
+                $this->view("foot");
+    
+            }
+            
+        }
+        
+    }
+    
+    public function view($page) {
+        if(file_exists("view/$page.php")) {
+            include "view/$page.php";
         }
         
     }

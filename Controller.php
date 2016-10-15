@@ -103,7 +103,7 @@ class Controller {
                 
                 $this->view("head");
                 
-                echo '<div class="w3-card w3-khaki w3-panel">Copy Url:<textarea class="w3-input">http://localhost/'.$your_link['id'].'</textarea><a href="http://localhost/'.$your_link['id'].'">http://localhost/'.$your_link['id'].'</a></div>';
+                echo '<div class="w3-card w3-khaki w3-panel">Copy Url:<textarea class="w3-input">http://'.$_SERVER['SERVER_NAME'].'/'.$your_link['id'].'</textarea><a href="http://'.$_SERVER['SERVER_NAME'].'/'.$your_link['id'].'">http://'.$_SERVER['SERVER_NAME'].'/'.$your_link['id'].'</a></div>';
                 
                 $this->view("foot");
                     

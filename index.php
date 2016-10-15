@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 /***
 *@ Url Shortner
 ***/
@@ -17,5 +19,7 @@ if(file_exists("$classname.php")) {
 }    
     
 }
+
+
 
 

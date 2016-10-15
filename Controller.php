@@ -15,7 +15,8 @@ class Controller {
         $this->allowed_actions = array(
         
             "go_to" => "go_to" ,
-            "shortenUrl" => "shortenUrl"
+            "shortenUrl" => "shortenUrl" ,
+            "captacha" => "captacha"
         
         );
         
@@ -47,6 +48,7 @@ class Controller {
         } else {
             
             include "view/index.php";
+            
         }    
     
     }
@@ -81,14 +83,21 @@ class Controller {
     public function shortenUrl() {
         
         $url = (isset($_POST['url'])) ? $_POST['url'] : null;
+        
+        $captacha = (isset($_POST['captacha'])) ? $_POST['captacha'] : null;
+        
         $insert = array();
-        if($url!=null) {
-            $insert['url'] = $url;
+        if($url!=null && $captacha!=null) {
             
+            if(isset($_SESSION['captacha'])) {
+                
+                if($captacha == $_SESSION['captacha']) {
+                    
+                    unset($_SESSION['captacha']);
+                    
+                     $insert['url'] = $url;
             
-            
-            
-            if($this->db->pdo_insert( 'url' , $insert )) {
+                    if($this->db->pdo_insert( 'url' , $insert )) {
                 
                 $your_link = $this->db->pdo_read_last('url','id');
                 
@@ -97,10 +106,42 @@ class Controller {
                 echo '<div class="w3-card w3-khaki w3-panel">Copy Url:<textarea class="w3-input">http://localhost/'.$your_link['id'].'</textarea><a href="http://localhost/'.$your_link['id'].'">http://localhost/'.$your_link['id'].'</a></div>';
                 
                 $this->view("foot");
-    
-            }
+                    
+                } 
+            }  else {
+                    //Captacha was wrong
+                        echo '<div class="w3-text-red">CAPTACHA entered was wrong. Please Try Again.</div>';
+                } 
+                
             
-        }
+           
+    
+            } else {
+                    //Captacha was wrong
+                        echo '<div class="w3-text-red">CAPTACHA entered was wrong. Please Try Again.</div>';
+                }
+            
+        } 
+        
+    }
+    
+    public function captacha() {
+        
+            $number = rand( 100000 , 999999 );
+        
+            $_SESSION['captacha'] = $number;
+            $font = 'font.ttf';
+        
+            header("Content-Type: image/png");
+            $im = @imagecreate(110, 40)
+                    or die("Cannot Initialize new GD image stream");
+            $background_color = imagecolorallocate($im, 255, 255, 255);
+            $text_color = imagecolorallocate($im, 0, 0, 0);
+        
+            imagettftext($im, 30, 0, 0, 30, $text_color , $font, $number );
+            //imagestring($im, 1000, 15, 15,  $number , $text_color);
+            imagepng($im);
+            imagedestroy($im);
         
     }
     

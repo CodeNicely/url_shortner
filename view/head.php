@@ -10,6 +10,8 @@
         
         <div class="w3-card-8 w3-panel"><form action="./shortenUrl" method="post">
             <input type="text" class="w3-input" name="url" placeholder="Shorten Url">
+            <img class="w3-panel" src="/captacha">
+            <input type="text" class="w3-input" name="captacha" placeholder="captacha">
             <input type="submit" class="w3-btn w3-purple">
             
             </form>
